@@ -1,5 +1,5 @@
 import {
-  LOAD_PROVIDER, ADD_PROVIDER, REMOVE_PROVIDER,
+  LOAD_PROVIDER, ADD_PROVIDER, REMOVE_PROVIDER, UPDATE_PROVIDER_DATA,
   START, SUCCESS, FAIL
 } from '../constants'
 import { getJSON } from '../utils'
@@ -113,5 +113,26 @@ export const unregister = (entityCode, eventId, providerId) => dispatch => {
     .catch(error => dispatch({
       type: REMOVE_PROVIDER + FAIL,
       error
+    }))
+}
+
+export const update = (entityCode, eventId, providerId, data) => dispatch => {
+  dispatch({
+    type: UPDATE_PROVIDER_DATA + START
+  })
+
+  const params = {
+    method: 'POST',
+    body: JSON.stringify({
+      ...data
+    })
+  }
+
+  getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}`, params)
+    .then(() => dispatch({
+      type: UPDATE_PROVIDER_DATA + SUCCESS
+    }))
+    .catch(error => dispatch({
+      type: UPDATE_PROVIDER_DATA + FAIL
     }))
 }

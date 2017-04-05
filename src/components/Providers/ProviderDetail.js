@@ -1,71 +1,42 @@
 import React, { Component, PropTypes } from 'react'
-import { getJSON } from '../../utils'
+import { connect } from 'react-redux'
 import { Template } from '../Template'
-import { Rules } from '../Rules'
-
-const initialTemplate = {
-  title: '',
-  body: '',
-}
+import { update } from '../../actions/providers'
+// import { Rules } from '../Rules'
 
 export class ProviderDetail extends Component {
   static propTypes = {
     entityCode: PropTypes.string.isRequired,
     eventId: PropTypes.number.isRequired,
-    providerId: PropTypes.number.isRequired
+    providerId: PropTypes.number.isRequired,
+    template: PropTypes.shape({
+      title: PropTypes.string,
+      body: PropTypes.string
+    }),
+    rules: PropTypes.array,
+    update: PropTypes.func
   }
 
-  state = {
-    template: { ...initialTemplate },
-    rules: []
-  }
+  render () {
+    const {
+      template, /*rules , */
+      entityCode, eventId, providerId,
+      update
+    } = this.props
 
-  load () {
-    const { entityCode, eventId, providerId } = this.props
-
-    getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}`)
-      .then(({ template, rules }) => this.setState({ template, rules }))
-      .catch(console.error)
-  }
-
-  reset () {
-    this.setState({
-      template: { ...initialTemplate }
-    }, this.load)
-  }
-
-  componentDidMount () {
-    this.load()
-  }
-
-  save () {
-    const { rules } = this
-    const { entityCode, eventId, providerId } = this.props
-    const { title, body } = this.template
-    const params = {
-      method: 'POST',
-      body: JSON.stringify({
+    const saveHandle = e => {
+      const { title, body } = this.template
+      const params = {
         template: {
           title: title.value,
           body: body.value
         },
         rules: []
-      })
-    }
+      }
 
-    rules.toJSON()
+      update(entityCode, eventId, providerId, params)
 
-    getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}`, params)
-      .then(() => this.reset())
-      .catch(console.error)
-  }
-
-  render () {
-    const { template, rules } = this.state
-
-    const saveHandle = e => {
       e.preventDefault()
-      this.save()
     }
 
     return (
@@ -74,10 +45,10 @@ export class ProviderDetail extends Component {
           { ...template }
           ref={ instance => this.template = instance }
         />
-        <Rules
+        {/*<Rules
           rules={ rules }
           ref={ instance => this.rules = instance }
-        />
+        />*/}
         <div>
           <button onClick={ saveHandle }>Save</button>
         </div>
@@ -85,3 +56,18 @@ export class ProviderDetail extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ providers }, { providerId }) => {
+  const { template, rules } = providers.rules[ providerId ]
+
+  return {
+    template,
+    rules
+  }
+}
+
+const mapDispatchToProps = {
+  update
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProviderDetail)

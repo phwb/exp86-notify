@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { ProviderDetail } from './ProviderDetail'
+import ProviderDetail from './ProviderDetail'
 
 const style = {
   margin: '10px 0',

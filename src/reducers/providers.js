@@ -1,5 +1,5 @@
 import {
-  LOAD_PROVIDER, ADD_PROVIDER, REMOVE_PROVIDER,
+  LOAD_PROVIDER, ADD_PROVIDER, REMOVE_PROVIDER, UPDATE_PROVIDER_DATA,
   START, SUCCESS, FAIL
 } from '../constants'
 
@@ -17,6 +17,7 @@ export const providers = (state = initialState, action) => {
   const { type, payload, error } = action
 
   switch (type) {
+    case UPDATE_PROVIDER_DATA + START:
     case REMOVE_PROVIDER + START:
     case ADD_PROVIDER + START:
     case LOAD_PROVIDER + START:
@@ -25,6 +26,7 @@ export const providers = (state = initialState, action) => {
         loading: true
       }
 
+    case UPDATE_PROVIDER_DATA + FAIL:
     case REMOVE_PROVIDER + FAIL:
     case ADD_PROVIDER + FAIL:
     case LOAD_PROVIDER + FAIL:
@@ -43,6 +45,7 @@ export const providers = (state = initialState, action) => {
         loading: false
       }
 
+    case UPDATE_PROVIDER_DATA + SUCCESS:
     case REMOVE_PROVIDER + SUCCESS:
     case ADD_PROVIDER + SUCCESS:
       return {
