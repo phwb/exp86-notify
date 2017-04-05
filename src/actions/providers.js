@@ -47,7 +47,10 @@ export const load = (entityCode, eventId) => dispatch => {
         .then(results => resolve({
           available,
           registered,
-          rules: results
+          rules: results.reduce((acc, item) => ({
+            ...acc,
+            [item.id]: item
+          }), {})
         }))
         .catch(error => reject(error))
     }))
