@@ -65,7 +65,13 @@ export const load = (entityCode, eventId) => dispatch => {
     }))
 }
 
-export const save = (entityCode, eventId, providerCode) => dispatch => {
+/**
+ * Экшен перемещает провайдер из списка "доступных для регистрации" в список "зарегистрированнх" провайдеров
+ * @param entityCode
+ * @param eventId
+ * @param providerCode
+ */
+export const register = (entityCode, eventId, providerCode) => dispatch => {
   dispatch({
     type: ADD_PROVIDER + START
   })
@@ -85,7 +91,13 @@ export const save = (entityCode, eventId, providerCode) => dispatch => {
     }))
 }
 
-export const remove = (entityCode, eventId, providerId) => dispatch => {
+/**
+ * Экшен перемещает провайдер из списка "зарегистрированнх" провайдеров в список "доступных для регистрации"
+ * @param entityCode
+ * @param eventId
+ * @param providerId
+ */
+export const unregister = (entityCode, eventId, providerId) => dispatch => {
   dispatch({
     type: REMOVE_PROVIDER + START
   })

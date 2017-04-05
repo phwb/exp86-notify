@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { ProviderSelect } from './ProviderSelect'
 import { ProviderList } from './ProviderList'
-import { load, save, remove } from '../../actions/providers'
+import { load, register, unregister } from '../../actions/providers'
 
 export class Providers extends Component {
   static propTypes = {
@@ -74,8 +74,8 @@ const mapStateToProps = ({ providers }) => ({
 
 const mapDispatchToProps = {
   load,
-  save,
-  remove
+  save: register,
+  remove: unregister
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Providers)
