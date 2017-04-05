@@ -1,7 +1,6 @@
 import {
-  EVENT,
-  START, SUCCESS, FAIL,
-  LOAD, ADD, SELECT, REMOVE
+  REMOVE_EVENT, ADD_EVENT, LOAD_EVENT, SELECT_EVENT,
+  START, SUCCESS, FAIL
 } from '../constants'
 import { getJSON } from '../utils'
 
@@ -12,7 +11,7 @@ const normalizeItem = item => ({
 
 export const load = entityCode => dispatch => {
   dispatch({
-    type: LOAD + EVENT + START
+    type: LOAD_EVENT + START
   })
 
   Promise.all([
@@ -25,7 +24,7 @@ export const load = entityCode => dispatch => {
       items = items.map(normalizeItem)
 
       dispatch({
-        type: LOAD + EVENT + SUCCESS,
+        type: LOAD_EVENT + SUCCESS,
         payload: {
           items,
           templates,
@@ -34,7 +33,7 @@ export const load = entityCode => dispatch => {
       })
     })
     .catch(error => dispatch({
-      type: EVENT + FAIL,
+      type: LOAD_EVENT + FAIL,
       error
     }))
 }
@@ -45,7 +44,7 @@ export const load = entityCode => dispatch => {
  */
 export const add = (entityCode, eventCode) => dispatch => {
   dispatch({
-    type: ADD + EVENT + START
+    type: ADD_EVENT + START
   })
 
   getJSON(`/entities/${entityCode}/events`, {
@@ -55,11 +54,11 @@ export const add = (entityCode, eventCode) => dispatch => {
     .then(() => getJSON(`/entities/${entityCode}/events`))
     .then(items => items.map(normalizeItem))
     .then(items => dispatch({
-      type: ADD + EVENT + SUCCESS,
+      type: ADD_EVENT + SUCCESS,
       payload: items
     }))
     .catch(error => dispatch({
-      type: EVENT + FAIL,
+      type: ADD_EVENT + FAIL,
       error
     }))
 }
@@ -68,7 +67,7 @@ export const add = (entityCode, eventCode) => dispatch => {
  * @param id
  */
 export const select = id => ({
-  type: SELECT + EVENT,
+  type: SELECT_EVENT,
   payload: id
 })
 
@@ -78,7 +77,7 @@ export const select = id => ({
  */
 export const remove = (entityCode, id) => dispatch => {
   dispatch({
-    type: REMOVE + EVENT + START
+    type: REMOVE_EVENT + START
   })
 
   getJSON(`/entities/${entityCode}/events/${id}`, {
@@ -87,11 +86,11 @@ export const remove = (entityCode, id) => dispatch => {
     .then(() => getJSON(`/entities/${entityCode}/events`))
     .then(items => items.map(normalizeItem))
     .then(items => dispatch({
-      type: REMOVE + EVENT + SUCCESS,
+      type: REMOVE_EVENT + SUCCESS,
       payload: items
     }))
     .catch(error => dispatch({
-      type: EVENT + FAIL,
+      type: REMOVE_EVENT + FAIL,
       error
     }))
 }

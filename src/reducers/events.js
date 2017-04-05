@@ -1,7 +1,6 @@
 import {
-  EVENT,
-  START, SUCCESS, FAIL,
-  LOAD, ADD, SELECT, REMOVE
+  REMOVE_EVENT, ADD_EVENT, LOAD_EVENT, SELECT_EVENT,
+  START, SUCCESS, FAIL
 } from '../constants'
 
 const defaultState = {
@@ -16,15 +15,7 @@ export const events = (state = defaultState, action) => {
   const { type, payload, error } = action
 
   switch (type) {
-    case REMOVE + EVENT + START:
-    case ADD + EVENT + START:
-    case LOAD + EVENT + START:
-      return {
-        ...state,
-        loading: true
-      }
-
-    case LOAD + EVENT + SUCCESS:
+    case LOAD_EVENT + SUCCESS:
       const { items, templates, assertions } = payload
 
       return {
@@ -34,21 +25,31 @@ export const events = (state = defaultState, action) => {
         loading: false
       }
 
-    case REMOVE + EVENT + SUCCESS:
-    case ADD + EVENT + SUCCESS:
+    case REMOVE_EVENT + SUCCESS:
+    case ADD_EVENT + SUCCESS:
       return {
         ...state,
         items: payload,
         loading: false
       }
 
-    case SELECT + EVENT:
+    case SELECT_EVENT:
       return {
         ...state,
         id: payload
       }
 
-    case EVENT + FAIL:
+    case REMOVE_EVENT + START:
+    case ADD_EVENT + START:
+    case LOAD_EVENT + START:
+      return {
+        ...state,
+        loading: true
+      }
+
+    case REMOVE_EVENT + FAIL:
+    case ADD_EVENT + FAIL:
+    case LOAD_EVENT + FAIL:
       console.log(error)
       return {
         ...state,
