@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { EventSelect } from './EventSelect'
 import { EventList } from './EventList'
 import { EventDetail } from './EventDetail'
-import { add as addEvent, select as selectEvent, remove as removeEvent } from '../../actions/events'
+import { add, select, remove } from '../../actions/events'
 
 export const Events = props => {
   const {
@@ -28,7 +28,7 @@ export const Events = props => {
     <div className="events">
       <div className="event-list">
         <EventSelect items={ available } onChange={ code => addEvent(entityCode, code) }/>
-        <EventList items={ registered } onClick={ id => selectEvent(id) }/>
+        <EventList items={ registered } onClick={ eventId => selectEvent(entityCode, eventId) }/>
       </div>
       <hr/>
       <EventDetail
@@ -59,6 +59,7 @@ const mapStateToProps = state => {
 
   return {
     entityCode: selectedSection,
+    loadingProviders: state.providers.loading,
     loading,
     items,
     event
@@ -66,24 +67,29 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  selectEvent,
-  addEvent,
-  removeEvent
+  selectEvent: select,
+  addEvent: add,
+  removeEvent: remove
 }
 
 const mergeProps = (stateProps, dispatchProps) => {
-  const { event } = stateProps
+  const { loadingProviders, ...state } = stateProps
+  const { event } = state
   const { selectEvent } = dispatchProps
 
   return {
-    ...stateProps,
+    ...state,
     ...dispatchProps,
-    selectEvent: id => {
-      if (!event) {
-        return selectEvent(id)
+    selectEvent: (entityCode, eventId) => {
+      if (loadingProviders) {
+        return
       }
 
-      event.id !== id && selectEvent(id)
+      if (!event) {
+        return selectEvent(eventId)
+      }
+
+      event.id !== eventId && selectEvent(eventId)
     }
   }
 }

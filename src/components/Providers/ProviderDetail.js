@@ -24,10 +24,6 @@ export class ProviderDetail extends Component {
     const { entityCode, eventId, providerId } = this.props
 
     getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}`)
-      // .then(data => {
-      //   console.log(data)
-      //   return data
-      // })
       .then(({ template, rules }) => this.setState({ template, rules }))
       .catch(console.error)
   }
@@ -44,24 +40,24 @@ export class ProviderDetail extends Component {
 
   save () {
     const { rules } = this
+    const { entityCode, eventId, providerId } = this.props
+    const { title, body } = this.template
+    const params = {
+      method: 'POST',
+      body: JSON.stringify({
+        template: {
+          title: title.value,
+          body: body.value
+        },
+        rules: []
+      })
+    }
 
     rules.toJSON()
-    // const { entityCode, eventId, providerId } = this.props
-    // const { title, body } = this.template
-    // const params = {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     template: {
-    //       title: title.value,
-    //       body: body.value
-    //     },
-    //     rules: []
-    //   })
-    // }
-    //
-    // getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}`, params)
-    //   .then(() => this.reset())
-    //   .catch(console.error)
+
+    getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}`, params)
+      .then(() => this.reset())
+      .catch(console.error)
   }
 
   render () {

@@ -38,10 +38,6 @@ export const load = entityCode => dispatch => {
     }))
 }
 
-/**
- * @param entityCode
- * @param eventCode
- */
 export const add = (entityCode, eventCode) => dispatch => {
   dispatch({
     type: ADD_EVENT + START
@@ -63,18 +59,11 @@ export const add = (entityCode, eventCode) => dispatch => {
     }))
 }
 
-/**
- * @param id
- */
-export const select = id => ({
+export const select = eventId => ({
   type: SELECT_EVENT,
-  payload: id
+  payload: eventId
 })
 
-/**
- * @param entityCode
- * @param id
- */
 export const remove = (entityCode, id) => dispatch => {
   dispatch({
     type: REMOVE_EVENT + START

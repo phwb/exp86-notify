@@ -1,92 +1,63 @@
 import React, { Component, PropTypes } from 'react'
-import { getJSON } from '../../utils'
+import { connect } from 'react-redux'
 import { ProviderSelect } from './ProviderSelect'
 import { ProviderList } from './ProviderList'
-
-const initialState = {
-  items: []
-}
+import { load, save, remove } from '../../actions/providers'
 
 export class Providers extends Component {
   static propTypes = {
-    entityCode: PropTypes.string.isRequired,
-    eventId: PropTypes.number.isRequired
-  }
-
-  state = { ...initialState }
-
-  loadItems () {
-    const { entityCode, eventId } = this.props
-
-    getJSON(`/entities/${entityCode}/events/${eventId}/providers`)
-      .then(items => items.map(item => ({
-        ...item,
-        id: parseInt(item.id, 10) || 0
-      })))
-      .then(items => this.setState({ items }))
-      .catch(console.error)
-  }
-
-  resetItems () {
-    this.setState({ ...initialState }, this.loadItems)
+    entityCode: PropTypes.string,
+    eventId: PropTypes.number,
+    available: PropTypes.array,
+    registered: PropTypes.array,
+    loading: PropTypes.bool,
+    save: PropTypes.func,
+    load: PropTypes.func
   }
 
   componentDidMount () {
-    this.loadItems()
+    const { load, entityCode, eventId } = this.props
+    load(entityCode, eventId)
   }
 
-  componentWillReceiveProps () {
-    this.resetItems()
-  }
+  componentWillReceiveProps (nextProps) {
+    const { load, entityCode, eventId } = this.props
+    const { available, registered, loading } = nextProps
+    const items = available.concat(registered)
 
-  add (providerCode) {
-    if (!providerCode) {
-      return
+    // обновляемся в случае смены события (клик по списку событий)
+    if (nextProps.eventId !== eventId) {
+      return load(entityCode, nextProps.eventId)
     }
 
-    const { entityCode, eventId } = this.props
-    const params = {
-      method: 'POST',
-      body: JSON.stringify({ providerCode })
+    // обновляемся в случае сохранения или удаления продайера
+    if (!items.length && loading === false) {
+      return load(entityCode, nextProps.eventId)
     }
-
-    getJSON(`/entities/${entityCode}/events/${eventId}/providers`, params)
-      .then(() => this.resetItems())
-      .catch(console.error)
-  }
-
-  remove (id) {
-    if (!id) {
-      return
-    }
-
-    const { entityCode, eventId } = this.props
-    const params = {
-      method: 'DELETE'
-    }
-
-    getJSON(`/entities/${entityCode}/events/${eventId}/providers/${id}`, params)
-      .then(() => this.resetItems())
-      .catch(console.error)
   }
 
   render () {
-    const { items } = this.state
-    const { entityCode, eventId } = this.props
+    const {
+      entityCode, eventId,
+      available, registered, loading,
+      save, remove
+    } = this.props
+    const items = available.concat(registered)
 
-    if (!items.length) {
+    if (!items.length && loading === false) {
+      return null
+    }
+
+    if (loading) {
       return <div>Loading providers...</div>
     }
 
-    const available = items.filter(item => item.id === 0)
-    const registered = items.filter(item => item.id > 0)
-
     return (
       <div className="providers">
-        <ProviderSelect items={ available } onChange={ value => this.add(value) }/>
+        <ProviderSelect items={ available } onChange={ providerCode => save(entityCode, eventId, providerCode) }/>
         <ProviderList
           items={ registered }
-          removeHandler={ value => this.remove(value) }
+          removeHandler={ providerId => remove(entityCode, eventId, providerId) }
           entityCode={ entityCode }
           eventId={ eventId }
         />
@@ -94,3 +65,17 @@ export class Providers extends Component {
     )
   }
 }
+
+const mapStateToProps = ({ providers }) => ({
+  registered: providers.registered,
+  available: providers.available,
+  loading: providers.loading
+})
+
+const mapDispatchToProps = {
+  load,
+  save,
+  remove
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Providers)

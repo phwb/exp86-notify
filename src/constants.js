@@ -22,3 +22,4 @@ export const ADD_EVENT = ADD + EVENT
 const PROVIDER = 'PROVIDER'
 export const LOAD_PROVIDER = LOAD + PROVIDER
 export const ADD_PROVIDER = ADD + PROVIDER
+export const REMOVE_PROVIDER = REMOVE + PROVIDER

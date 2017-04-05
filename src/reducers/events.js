@@ -6,9 +6,10 @@ import {
 const defaultState = {
   id: null,
   items: [],
+  loading: false,
+  // справочники для провайдеров
   templates: [],
   assertions: [],
-  loading: false
 }
 
 export const events = (state = defaultState, action) => {
@@ -19,10 +20,17 @@ export const events = (state = defaultState, action) => {
       const { items, templates, assertions } = payload
 
       return {
+        ...state,
         items,
         templates,
         assertions,
         loading: false
+      }
+
+    case SELECT_EVENT:
+      return {
+        ...state,
+        id: payload
       }
 
     case REMOVE_EVENT + SUCCESS:
@@ -31,12 +39,6 @@ export const events = (state = defaultState, action) => {
         ...state,
         items: payload,
         loading: false
-      }
-
-    case SELECT_EVENT:
-      return {
-        ...state,
-        id: payload
       }
 
     case REMOVE_EVENT + START:

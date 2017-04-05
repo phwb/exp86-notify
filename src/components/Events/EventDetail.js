@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Providers } from '../Providers'
+import Providers from '../Providers'
 
 export const EventDetail = props => {
   const { event, removeHandler, entityCode } = props
