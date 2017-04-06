@@ -27,7 +27,7 @@ export class Template extends Component {
 
     return (
       <div style={{ marginTop: '10px' }}>
-        <div>Template</div>
+        <div>---------- Template ----------</div>
         <div style={{ marginLeft: '20px' }}>
           <div>
             <label>

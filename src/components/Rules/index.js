@@ -1,20 +1,13 @@
 import React, { Component, PropTypes } from 'react'
-// import { connect } from 'react-redux'
+import RuleDetail from './RuleDetail'
 
-const RuleDetail = props => (
-  <div style={{ margin: '10px 30px', border: '1px solid #000', padding: '10px' }}>
-    <select>
-      <option value="1">Assert 1</option>
-      <option value="2">Assert 2</option>
-      <option value="3">Assert 3</option>
-    </select>
-    <br/>
-    <label><input type="radio" name="radio1"/> OR</label>
-    <label><input type="radio" name="radio1"/> AND</label>
-    <br/>
-    <input type="text" placeholder="Consumer"/>
-  </div>
-)
+const style = {
+  display: 'inline-block',
+  padding: '2px 8px',
+  border: '1px solid #000',
+  borderRadius: '50%',
+  margin: '0 3px'
+}
 
 const RuleItem = props => {
   const handle = e => {
@@ -23,8 +16,8 @@ const RuleItem = props => {
   }
 
   return (
-    <span style={{ margin: '0 3px' }}>
-      <a href='#' onClick={ handle }>{ props.name }</a>
+    <span>
+      <a href='#' style={ style } onClick={ handle }>{ props.name }</a>
     </span>
   )
 }
@@ -49,60 +42,44 @@ RuleList.propTypes = {
 
 export class Rules extends Component {
   static propTypes = {
-    rules: PropTypes.array
-  }
-
-  static defaultProps = {
-    rules: []
+    entityCode: PropTypes.string.isRequired,
+    eventId: PropTypes.number.isRequired,
+    providerId: PropTypes.number.isRequired,
+    rules: PropTypes.array,
+    add: PropTypes.func
   }
 
   state = {
-    rules: this.props.rules,
     index: 0
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.setState({
-      rules: nextProps.rules
-    })
-  }
-
-  toJSON () {
-    console.log(this.state.rules)
-  }
-
-  add () {
-    const { rules } = this.state
-    const newRules = [
-      ...rules,
-      {
-        name: `${rules.length + 1}`
-      }
-    ]
-
-    this.setState({
-      rules: newRules,
-      index: newRules.length - 1
-    })
-  }
-
   render () {
-    const { index, rules } = this.state
+    const { entityCode, eventId, providerId } = this.props
+    const { rules, add } = this.props
+    const { index } = this.state
     const rule = rules[ index ]
 
-    const handle = e => {
-      this.add()
+    const addHandle = e => {
+      add()
       e.preventDefault()
     }
 
     return (
       <div style={{ marginTop: '10px' }}>
-        <div>Rules</div>
+        <div>---------- Rules ----------</div>
         <div style={{ marginLeft: '20px' }}>
           <RuleList items={ rules } changeHandle={ index => this.setState({ index }) }/>
-          <a href="#" onClick={ handle }>+ Add rule</a>
+          <a href="#" onClick={ addHandle }>+ Add rule</a>
         </div>
-        <RuleDetail { ...rule }/>
+        { rule
+          ? <RuleDetail
+            { ...rule }
+            entityCode={ entityCode }
+            eventId={ eventId }
+            providerId={ providerId }
+            ruleIndex={ index }
+          />
+          : null }
       </div>
     )
   }

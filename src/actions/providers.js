@@ -1,5 +1,6 @@
 import {
   LOAD_PROVIDER, ADD_PROVIDER, REMOVE_PROVIDER, UPDATE_PROVIDER_DATA,
+  ADD_PROVIDER_RULE, UPDATE_PROVIDER_RULE, REMOVE_PROVIDER_RULE,
   START, SUCCESS, FAIL
 } from '../constants'
 import { getJSON } from '../utils'
@@ -47,7 +48,7 @@ export const load = (entityCode, eventId) => dispatch => {
         .then(results => resolve({
           available,
           registered,
-          rules: results.reduce((acc, item) => ({
+          data: results.reduce((acc, item) => ({
             ...acc,
             [item.id]: item
           }), {})
@@ -134,5 +135,55 @@ export const update = (entityCode, eventId, providerId, data) => dispatch => {
     }))
     .catch(error => dispatch({
       type: UPDATE_PROVIDER_DATA + FAIL
+    }))
+}
+
+export const addRule = (providerId, defaultLogic) => ({
+  type: ADD_PROVIDER_RULE,
+  payload: {
+    providerId,
+    rule: {
+      assertions: [],
+      logic: defaultLogic,
+      consumers: [
+        'Default user 1',
+        'Default user 2'
+      ]
+    }
+  }
+})
+
+export const updateRule = (providerId, ruleIndex, data) => ({
+  type: UPDATE_PROVIDER_RULE,
+  payload: {
+    providerId,
+    ruleIndex,
+    data
+  }
+})
+
+export const removeRule = (entityCode, eventId, providerId, ruleIndex, ruleId) => dispatch => {
+  if (!ruleId) {
+    dispatch({
+      type: REMOVE_PROVIDER_RULE,
+      payload: {
+        providerId,
+        ruleIndex
+      }
+    })
+    return
+  }
+
+  dispatch({
+    type: REMOVE_PROVIDER_RULE + START,
+  })
+
+  getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}/rule/${ruleId}`)
+    .then(() => dispatch({
+      type: REMOVE_PROVIDER_RULE + SUCCESS
+    }))
+    .catch(error => dispatch({
+      type: REMOVE_PROVIDER_RULE + FAIL,
+      error
     }))
 }

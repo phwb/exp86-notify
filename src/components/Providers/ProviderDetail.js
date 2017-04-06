@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Template } from '../Template'
-import { update } from '../../actions/providers'
-// import { Rules } from '../Rules'
+import { Rules } from '../Rules'
+import { update, addRule } from '../../actions/providers'
 
 export class ProviderDetail extends Component {
   static propTypes = {
@@ -13,15 +13,17 @@ export class ProviderDetail extends Component {
       title: PropTypes.string,
       body: PropTypes.string
     }),
+    defaultLogic: PropTypes.string,
     rules: PropTypes.array,
-    update: PropTypes.func
+    update: PropTypes.func,
+    addRule: PropTypes.func
   }
 
   render () {
     const {
-      template, /*rules , */
-      entityCode, eventId, providerId,
-      update
+      template, rules,
+      entityCode, eventId, providerId, defaultLogic,
+      update, addRule
     } = this.props
 
     const saveHandle = e => {
@@ -31,13 +33,14 @@ export class ProviderDetail extends Component {
           title: title.value,
           body: body.value
         },
-        rules: []
+        rules
       }
 
       update(entityCode, eventId, providerId, params)
 
       e.preventDefault()
     }
+    console.log(rules)
 
     return (
       <div className="provider-detail">
@@ -45,10 +48,15 @@ export class ProviderDetail extends Component {
           { ...template }
           ref={ instance => this.template = instance }
         />
-        {/*<Rules
+        <Rules
+          entityCode={ entityCode }
+          eventId={ eventId }
+          providerId={ providerId }
           rules={ rules }
+          add={ () => addRule(providerId, defaultLogic) }
           ref={ instance => this.rules = instance }
-        />*/}
+        />
+        <br/>
         <div>
           <button onClick={ saveHandle }>Save</button>
         </div>
@@ -57,17 +65,19 @@ export class ProviderDetail extends Component {
   }
 }
 
-const mapStateToProps = ({ providers }, { providerId }) => {
-  const { template, rules } = providers.rules[ providerId ]
+const mapStateToProps = ({ providers, dictionaries }, { providerId }) => {
+  const { template, rules } = providers.data[ providerId ]
 
   return {
     template,
-    rules
+    rules,
+    defaultLogic: dictionaries.logic[0].code
   }
 }
 
 const mapDispatchToProps = {
-  update
+  update,
+  addRule
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProviderDetail)
