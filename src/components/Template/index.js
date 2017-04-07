@@ -1,59 +1,57 @@
-import React, { Component, PropTypes } from 'react'
+import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { updateTemplate } from '../../actions/providers'
 
-export class Template extends Component {
-  static propTypes = {
-    title: PropTypes.string,
-    body: PropTypes.string
-  }
+export const Template = props => {
+  const {
+    title, body, providerId,
+    update
+  } = props
 
-  state = { ...this.props }
-
-  componentWillReceiveProps (nextProps) {
-    this.setState({ ...nextProps })
-  }
-
-  handle = e => {
-    const { name, value } = e.target
-
-    this.setState({
-      [name]: value
+  const handle = name => e => {
+    update(providerId, {
+      [ name ]: e.target.value
     })
-
     e.preventDefault()
   }
 
-  render () {
-    const { title, body } = this.state
-
-    return (
-      <div style={{ marginTop: '10px' }}>
-        <div>---------- Template ----------</div>
-        <div style={{ marginLeft: '20px' }}>
-          <div>
-            <label>
-              Title<br/>
-              <input
-                type='text'
-                name='title'
-                value={ title }
-                onChange={ this.handle }
-                ref={ input => this.title = input }
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Body<br/>
-              <textarea
-                name='body'
-                value={ body }
-                onChange={ this.handle }
-                ref={ input => this.body = input }
-              />
-            </label>
-          </div>
+  return (
+    <div style={{ marginTop: '10px' }}>
+      <div>---------- Template ----------</div>
+      <div style={{ marginLeft: '20px' }}>
+        <div>
+          <label>
+            Title<br/>
+            <input
+              type='text'
+              value={ title }
+              onChange={ handle('title') }
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Body<br/>
+            <textarea
+              value={ body }
+              onChange={ handle('body') }
+            />
+          </label>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
+
+Template.propTypes = {
+  title: PropTypes.string,
+  body: PropTypes.string,
+  providerId: PropTypes.number,
+  update: PropTypes.func
+}
+
+const mapDispatchToProps = {
+  update: updateTemplate
+}
+
+export default connect(null, mapDispatchToProps)(Template)

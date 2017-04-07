@@ -1,6 +1,7 @@
 import {
   LOAD_PROVIDER, ADD_PROVIDER, REMOVE_PROVIDER, UPDATE_PROVIDER_DATA,
   ADD_PROVIDER_RULE, UPDATE_PROVIDER_RULE, REMOVE_PROVIDER_RULE,
+  UPDATE_PROVIDER_TEMPLATE,
   START, SUCCESS, FAIL
 } from '../constants'
 import { getJSON } from '../utils'
@@ -145,10 +146,7 @@ export const addRule = (providerId, defaultLogic) => ({
     rule: {
       assertions: [],
       logic: defaultLogic,
-      consumers: [
-        'Default user 1',
-        'Default user 2'
-      ]
+      consumers: []
     }
   }
 })
@@ -178,7 +176,9 @@ export const removeRule = (entityCode, eventId, providerId, ruleIndex, ruleId) =
     type: REMOVE_PROVIDER_RULE + START,
   })
 
-  getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}/rule/${ruleId}`)
+  getJSON(`/entities/${entityCode}/events/${eventId}/providers/${providerId}/rule/${ruleId}`, {
+    method: 'DELETE'
+  })
     .then(() => dispatch({
       type: REMOVE_PROVIDER_RULE + SUCCESS
     }))
@@ -187,3 +187,11 @@ export const removeRule = (entityCode, eventId, providerId, ruleIndex, ruleId) =
       error
     }))
 }
+
+export const updateTemplate = (providerId, data) => ({
+  type: UPDATE_PROVIDER_TEMPLATE,
+  payload: {
+    providerId,
+    data
+  }
+})

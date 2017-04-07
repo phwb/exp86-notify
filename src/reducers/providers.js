@@ -1,6 +1,7 @@
 import {
   LOAD_PROVIDER, ADD_PROVIDER, REMOVE_PROVIDER, UPDATE_PROVIDER_DATA,
   ADD_PROVIDER_RULE, UPDATE_PROVIDER_RULE, REMOVE_PROVIDER_RULE,
+  UPDATE_PROVIDER_TEMPLATE,
   START, SUCCESS, FAIL
 } from '../constants'
 
@@ -18,6 +19,26 @@ export const providers = (state = initialState, action) => {
   const { type, payload, error } = action
 
   switch (type) {
+    case UPDATE_PROVIDER_TEMPLATE: {
+      const { providerId, data } = payload
+      const providerData = state.data[ providerId ]
+      const template = {
+        ...providerData.template,
+        ...data
+      }
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [ providerId ]: {
+            ...providerData,
+            template
+          }
+        }
+      }
+    }
+
     case REMOVE_PROVIDER_RULE: {
       const { providerId, ruleIndex } = payload
       const providerData = state.data[ providerId ]
