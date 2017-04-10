@@ -1,43 +1,45 @@
 import React, { Component, PropTypes } from 'react'
 import RuleDetail from './RuleDetail'
 
-const style = {
-  display: 'inline-block',
-  padding: '2px 8px',
-  border: '1px solid #000',
-  borderRadius: '50%',
-  margin: '0 3px'
-}
-
 const RuleItem = props => {
   const handle = e => {
     props.onClick(props.id)
     e.preventDefault()
   }
 
+  let className = props.active
+    ? 'provider-tabs__item active'
+    : 'provider-tabs__item'
+
   return (
-    <span>
-      <a href='#' style={ style } onClick={ handle }>{ props.name }</a>
-    </span>
+    <a href='#' className={ className } onClick={ handle }>
+      { props.name }
+    </a>
   )
 }
 
 const RuleList = props => (
-  <div>
+  <div className="provider-tabs regs">
     { props.items.map((item, index) => (
       <RuleItem
-        key={ index }
+        key={ `rule-item-${index}` }
         name={ index + 1 }
         { ...item }
         onClick={ () => props.changeHandle(index) }
+        active={ index === props.selectedIndex }
       />
     )) }
+
+    <div className="provider-nav__add-rule">
+      <button onClick={ () => props.addHandle() }>Добавить правило</button>
+    </div>
   </div>
 )
 
 RuleList.propTypes = {
   items: PropTypes.array,
-  changeHandle: PropTypes.func
+  changeHandle: PropTypes.func,
+  addHandle: PropTypes.func
 }
 
 export class Rules extends Component {
@@ -58,29 +60,28 @@ export class Rules extends Component {
     const { rules, add } = this.props
     const { index } = this.state
     const rule = rules[ index ]
+    let detail = null
 
-    const addHandle = e => {
-      add()
-      e.preventDefault()
+    if (rule) {
+      detail = <RuleDetail
+        { ...rule }
+        entityCode={ entityCode }
+        eventId={ eventId }
+        providerId={ providerId }
+        ruleIndex={ index }
+      />
     }
 
     return (
-      <div style={{ marginTop: '10px' }}>
-        <div>---------- Rules ----------</div>
-        <div style={{ marginLeft: '20px' }}>
-          <RuleList items={ rules } changeHandle={ index => this.setState({ index }) }/>
-          <a href="#" onClick={ addHandle }>+ Add rule</a>
-        </div>
-        { rule
-          ? <RuleDetail
-            { ...rule }
-            entityCode={ entityCode }
-            eventId={ eventId }
-            providerId={ providerId }
-            ruleIndex={ index }
-          />
-          : null }
-      </div>
+      <section className="provider-regulations">
+        <RuleList
+          items={ rules }
+          changeHandle={ index => this.setState({ index }) }
+          addHandle={ () => add() }
+          selectedIndex={ index }
+        />
+        { detail }
+      </section>
     )
   }
 }

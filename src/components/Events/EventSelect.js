@@ -14,7 +14,7 @@ EventOption.propTypes = {
 
 const EventSelect = props => (
   <select onChange={ event => props.onChange(event.target.value) }>
-    <EventOption code='' name='-- выберите событие --' />
+    <EventOption code='' name='не выбрано' />
     { props.items.map(item => <EventOption key={ item.code } { ...item } />) }
   </select>
 )

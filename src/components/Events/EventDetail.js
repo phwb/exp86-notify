@@ -14,9 +14,12 @@ export const EventDetail = props => {
   }
 
   return (
-    <div className="event-detail">
-      <div className="event-detail__title">
-        { event.name } <a href="#" onClick={ handler }>Удалить</a>
+    <div className="col-nt-70">
+      <div className="notification-h2 clean">
+        { event.name }
+        <div className="notification-remove" onClick={ handler } title="Удалить событие">
+          <span className="icon-remove"/>
+        </div>
       </div>
       <hr/>
       <Providers entityCode={ entityCode } eventId={ event.id } />

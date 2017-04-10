@@ -1,43 +1,66 @@
-import React, { PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Template from '../Template'
 import { Rules } from '../Rules'
-import { update, addRule } from '../../actions/providers'
+import { addRule } from '../../actions/providers'
 
-export const ProviderDetail = props => {
-  const {
-    template, rules,
-    entityCode, eventId, providerId, defaultLogic,
-    update, addRule
-  } = props
-
-  const saveHandle = e => {
-    update(entityCode, eventId, providerId, {
-      template,
-      rules
-    })
-    e.preventDefault()
+export class ProviderDetail extends Component {
+  state = {
+    activeTab: 'template'
   }
 
-  return (
-    <div className="provider-detail">
-      <Template
-        { ...template }
-        providerId={ providerId }
-      />
-      <Rules
-        entityCode={ entityCode }
-        eventId={ eventId }
-        providerId={ providerId }
-        rules={ rules }
-        add={ () => addRule(providerId, defaultLogic) }
-      />
-      <br/>
-      <div>
-        <button onClick={ saveHandle }>Save</button>
+  changeTab = tabName => () => {
+    this.setState({
+      activeTab: tabName
+    })
+  }
+
+  render () {
+    const {
+      template, rules,
+      entityCode, eventId, providerId, defaultLogic,
+      addRule
+    } = this.props
+    const key = `${eventId}-${providerId}`
+    const { activeTab } = this.state
+
+    return (
+      <div className="provider-tabs">
+        <input
+          className="provider-template__input"
+          id={ `template-${key}` }
+          name={ `tab-${key}` }
+          type="radio"
+          onChange={ this.changeTab('template') }
+          checked={ activeTab === 'template' }
+        />
+        <label htmlFor={ `template-${key}` }>Шаблон</label>
+        <input
+          className="provider-regulations__input"
+          id={ `rules-${key}` }
+          name={ `tab-${key}` }
+          type="radio"
+          onChange={ this.changeTab('rules') }
+          checked={ activeTab === 'rules' }
+        />
+        <label htmlFor={ `rules-${key}` }>Правила</label>
+        <hr/>
+
+        <Template
+          { ...template }
+          providerId={ providerId }
+        />
+
+        <Rules
+          entityCode={ entityCode }
+          eventId={ eventId }
+          providerId={ providerId }
+          rules={ rules }
+          add={ () => addRule(providerId, defaultLogic) }
+        />
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 ProviderDetail.propTypes = {
@@ -54,22 +77,18 @@ ProviderDetail.propTypes = {
   addRule: PropTypes.func
 }
 
-const mapStateToProps = ({ providers, dictionaries }, { providerId }) => {
-  const { template, rules } = providers.data[ providerId ]
+const mapStateToProps = ({ dictionaries } ) => {
   const { logic } = dictionaries
   const defaultLogic = logic && logic.length > 0
     ? logic[0].code
     : ''
 
   return {
-    template,
-    rules,
     defaultLogic
   }
 }
 
 const mapDispatchToProps = {
-  update,
   addRule
 }
 

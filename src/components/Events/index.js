@@ -25,12 +25,17 @@ export const Events = props => {
   const registered = items.filter(item => item.id > 0)
 
   return (
-    <div className="events">
-      <div className="event-list">
-        <EventSelect items={ available } onChange={ code => addEvent(entityCode, code) }/>
+    <div className="col-nt">
+      <div className="col-nt-30 mr-20">
+        <h2 className="notification-h2">Список событий</h2>
+        <div className="form_default_item">
+          <div className="form_default_title">Добавить событие</div>
+          <EventSelect items={ available } onChange={ code => addEvent(entityCode, code) }/>
+        </div>
+
         <EventList items={ registered } onClick={ eventId => selectEvent(entityCode, eventId) }/>
       </div>
-      <hr/>
+
       <EventDetail
         removeHandler={ id => removeEvent(entityCode, id) }
         event={ event }

@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { ProviderSelect } from './ProviderSelect'
-import { ProviderList } from './ProviderList'
-import { load, register, unregister } from '../../actions/providers'
+import ProviderList from './ProviderList'
+import { load, register } from '../../actions/providers'
 
 export class Providers extends Component {
   static propTypes = {
@@ -11,8 +11,8 @@ export class Providers extends Component {
     available: PropTypes.array,
     registered: PropTypes.array,
     loading: PropTypes.bool,
-    save: PropTypes.func,
-    load: PropTypes.func
+    load: PropTypes.func,
+    register: PropTypes.func
   }
 
   componentDidMount () {
@@ -40,7 +40,7 @@ export class Providers extends Component {
     const {
       entityCode, eventId,
       available, registered, loading,
-      save, remove
+      register
     } = this.props
     const items = available.concat(registered)
 
@@ -54,10 +54,18 @@ export class Providers extends Component {
 
     return (
       <div className="providers">
-        <ProviderSelect items={ available } onChange={ providerCode => save(entityCode, eventId, providerCode) }/>
+        <div className="form_default_item">
+          <div className="form_default_title">Добавить провайдера</div>
+          <div className="form_default_input">
+            <ProviderSelect
+              items={ available }
+              onChange={ providerCode => register(entityCode, eventId, providerCode) }
+            />
+          </div>
+        </div>
+
         <ProviderList
           items={ registered }
-          removeHandler={ providerId => remove(entityCode, eventId, providerId) }
           entityCode={ entityCode }
           eventId={ eventId }
         />
@@ -74,8 +82,7 @@ const mapStateToProps = ({ providers }) => ({
 
 const mapDispatchToProps = {
   load,
-  save: register,
-  remove: unregister
+  register
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Providers)

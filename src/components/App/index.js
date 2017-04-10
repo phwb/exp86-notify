@@ -4,6 +4,7 @@ import { load as loadDictionaries } from '../../actions/dictionaries'
 import { load as loadSections } from '../../actions/sections'
 import Sections from '../Sections'
 import Events from '../Events'
+import './notification.css'
 
 export class App extends Component {
   static propTypes = {
@@ -21,14 +22,13 @@ export class App extends Component {
     const { loading } = this.props
 
     if (loading) {
-      return <div>Global loading...</div>
+      return <div>Загрузка...</div>
     }
 
     return (
-      <div className="App">
+      <div>
         <h1>Настройка уведомлений</h1>
         <Sections/>
-        <hr/>
         <Events/>
       </div>
     )

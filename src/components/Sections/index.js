@@ -10,7 +10,7 @@ const Item = props => {
   }
 
   return (
-    <li>
+    <li className="notification-menu__item">
       <a href="#" onClick={ handler }>
         { props.name }
       </a>
@@ -24,7 +24,7 @@ Item.propTypes = {
 }
 
 const List = props => (
-  <ul>
+  <ul className="notification-menu">
     { props.items.map(item => <Item key={ item.code } { ...item } onClick={ props.onClick }/>) }
   </ul>
 )

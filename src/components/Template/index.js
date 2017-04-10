@@ -4,7 +4,7 @@ import { updateTemplate } from '../../actions/providers'
 
 export const Template = props => {
   const {
-    title, body, providerId,
+    title, body, providerId, templates,
     update
   } = props
 
@@ -16,30 +16,24 @@ export const Template = props => {
   }
 
   return (
-    <div style={{ marginTop: '10px' }}>
-      <div>---------- Template ----------</div>
-      <div style={{ marginLeft: '20px' }}>
-        <div>
-          <label>
-            Title<br/>
-            <input
-              type='text'
-              value={ title }
-              onChange={ handle('title') }
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Body<br/>
-            <textarea
-              value={ body }
-              onChange={ handle('body') }
-            />
-          </label>
-        </div>
+    <section className="provider-template">
+      <div className="form_default_item">
+        <div className="form_default_title">Заголовок</div>
+        <input type='text' value={ title } onChange={ handle('title') }/>
       </div>
-    </div>
+      <div className="contacts_form_item">
+        <div className="form_default_title">Тело</div>
+        <textarea value={ body } onChange={ handle('body') }/>
+      </div>
+      <div className="form_default_item">
+        <div className="form_default_title">Доступные константы</div>
+        { templates.map((item, i) => (
+          <div className="form_default_option" key={ `template-${i}` }>
+            <strong>{ item.code }</strong> - { item.value }
+          </div>
+        )) }
+      </div>
+    </section>
   )
 }
 
@@ -50,8 +44,12 @@ Template.propTypes = {
   update: PropTypes.func
 }
 
+const mapStateToProps = ({ events }) => ({
+  templates: events.templates
+})
+
 const mapDispatchToProps = {
   update: updateTemplate
 }
 
-export default connect(null, mapDispatchToProps)(Template)
+export default connect(mapStateToProps, mapDispatchToProps)(Template)

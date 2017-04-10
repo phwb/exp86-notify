@@ -1,11 +1,68 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { updateRule, removeRule, } from '../../actions/providers'
 
-const style = {
-  margin: '10px 30px',
-  border: '1px solid #000',
-  padding: '10px'
+const Consumers = props => {
+  const { id, items, dictionaries, update, remove } = props
+
+  if (!items.length) {
+    return null
+  }
+
+  const handler = i => e => {
+    remove(i)
+    e.preventDefault()
+  }
+
+  return (
+    <div className="form_default_item mb-5">
+      <div className="form_default_title">Получатели</div>
+      { items.map((name, i) => (
+        <div key={ `${id}-${i}` } className="form_default_input cleaner mb-5">
+          <input
+            type="text"
+            value={ name }
+            onChange={ e => update(i, e.target.value) }
+          />
+          <div className="cleaner-remove" onClick={ handler(i) }>
+            <span className="icon-remove"/>
+          </div>
+          <br/>
+        </div>
+      )) }
+      <div className="form_default_item" style={{ marginTop: '20px' }}>
+        <div className="form_default_title">Доступные константы</div>
+        { dictionaries.map((item, i) => (
+          <div className="form_default_option" key={ `dictionaries-${i}` }>
+            <strong>{ item.code }</strong> — { item.value }
+          </div>
+        )) }
+      </div>
+    </div>
+  )
+}
+
+Consumers.propTypes = {
+  items: PropTypes.array,
+  update: PropTypes.func,
+  remove: PropTypes.func,
+  id: PropTypes.string
+}
+
+class Assertions extends Component {
+  render () {
+    const { items, values, change } = this.props
+
+    return (
+      <select ref={ select => this.select = select } multiple={ true } value={ values } onChange={ change } >
+        { items.map((item, i) => (
+          <option key={ `assertions-${i}` } value={ item.code }>
+            { item.name }
+          </option>
+        )) }
+      </select>
+    )
+  }
 }
 
 export const RuleDetail = props => {
@@ -54,62 +111,64 @@ export const RuleDetail = props => {
   })
 
   return (
-    <div style={ style }>
-      <select
-        multiple={ true }
-        value={ assertions }
-        onChange={ selectAssertionsHandle }
-      >
-        { dictionaries.assertions.map((item, i) => (
-          <option key={ `assertions-${key}-${i}` } value={ item.code }>
-            { item.name }
-          </option>
-        )) }
-      </select>
-      <br/>
-      { dictionaries.logic.map((item, i) => (
-        <label key={ `logic-${key}-${i}` }>
-          <input
-            type="radio"
-            checked={ item.code === logic }
-            value={ item.code }
-            onChange={ changeLogicHandle }
-          /> { item.name }
-        </label>
-      )) }
-      <hr/>
-      { consumers.map((name, i) => (
-        <div key={ `consumer-${key}-${i}` }>
-          <input
-            type="text"
-            value={ name }
-            onChange={ e => updateConsumerHandler(i, e.target.value) }
+    <div className="provider-regulations-block">
+      <div className="form_default_item">
+        <div className="form_default_title">Утверждение</div>
+        <div className="form_default_input">
+          <Assertions
+            items={ dictionaries.assertions }
+            values={ assertions }
+            change={ selectAssertionsHandle }
           />
-          <button onClick={ () => removeConsumerHandler(i) }>
-            Delete consumer
-          </button>
-          <br/>
         </div>
-      )) }
-      <div style={{ marginTop: '5px' }}>
-        <button onClick={ addConsumerHandler }>+ Add consumer</button>
       </div>
-      <hr/>
-      <button onClick={ () => removeRule(entityCode, eventId, providerId, ruleIndex, id) }>
-        Delete rule
-      </button>
+      <div className="form_default_item">
+        <div className="form_default_title">Логика</div>
+        <div className="form_default_input">
+          { dictionaries.logic.map((item, i) => (
+            <div className="form_default_radio" key={ `logic-${key}-${i}` }>
+              <input
+                id={ `logic-${key}-${i}` }
+                type="radio"
+                checked={ item.code === logic }
+                value={ item.code }
+                onChange={ changeLogicHandle }
+              />
+              <label htmlFor={ `logic-${key}-${i}` }>
+                { item.name }
+              </label>
+            </div>
+          )) }
+        </div>
+      </div>
+      <Consumers
+        items={ consumers }
+        dictionaries={ dictionaries.consumers }
+        update={ updateConsumerHandler }
+        remove={ removeConsumerHandler }
+        id={ `consumer-${key}` }
+      />
+      <div className="provider-nav__add">
+        <button onClick={ addConsumerHandler }>Добавить получателя</button>
+      </div>
+      <div className="provider-nav__remove-regulation">
+        <button onClick={ () => removeRule(entityCode, eventId, providerId, ruleIndex, id) }>
+          Удалить правило
+        </button>
+      </div>
     </div>
   )
 }
 
 const mapStateToProps = ({ events, dictionaries }) => {
   const { assertions } = events
-  const { logic } = dictionaries
+  const { logic, consumers } = dictionaries
 
   return {
     dictionaries: {
       assertions,
-      logic
+      logic,
+      consumers
     }
   }
 }

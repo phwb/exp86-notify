@@ -21,11 +21,21 @@ Item.propTypes = {
   code: PropTypes.string.isRequired
 }
 
-const EventList = props => (
-  <ul>
-    { props.items.map(item => <Item key={ item.id } onClick={ props.onClick } { ...item } />) }
-  </ul>
-)
+const EventList = props => {
+  const { items, onClick } = props
+
+  if (!items.length) {
+    return null
+  }
+
+  return (
+    <nav className="navbar notification-navbar">
+      <ul>
+        { items.map(item => <Item key={ item.id } onClick={ onClick } { ...item } />) }
+      </ul>
+    </nav>
+  )
+}
 
 EventList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape(Item.propTypes)),

@@ -13,7 +13,7 @@ ProviderOption.propTypes = {
 
 export const ProviderSelect = props => (
   <select onChange={ e => props.onChange(e.target.value) }>
-    <ProviderOption code='' name='-- select provider --' />
+    <ProviderOption code='' name='не выбрано' />
     { props.items.map(item => <ProviderOption key={ item.code } { ...item } />) }
   </select>
 )
