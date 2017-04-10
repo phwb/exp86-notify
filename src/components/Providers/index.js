@@ -49,7 +49,7 @@ export class Providers extends Component {
     }
 
     if (loading) {
-      return <div>Loading providers...</div>
+      return <div><em>Загрузка списка провайдеров...</em></div>
     }
 
     return (

@@ -9,8 +9,12 @@ const Item = props => {
     e.preventDefault()
   }
 
+  const className = props.selected
+    ? 'notification-menu__item active'
+    : 'notification-menu__item'
+
   return (
-    <li className="notification-menu__item">
+    <li className={ className }>
       <a href="#" onClick={ handler }>
         { props.name }
       </a>
@@ -25,7 +29,14 @@ Item.propTypes = {
 
 const List = props => (
   <ul className="notification-menu">
-    { props.items.map(item => <Item key={ item.code } { ...item } onClick={ props.onClick }/>) }
+    { props.items.map(item => (
+      <Item
+        key={ item.code }
+        { ...item }
+        onClick={ code => code !== props.selectedSection && props.onClick(code) }
+        selected={ props.selectedSection === item.code }
+      />
+    )) }
   </ul>
 )
 
@@ -35,7 +46,8 @@ List.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  items: state.sections.items
+  items: state.sections.items,
+  selectedSection: state.selectedSection
 })
 
 const mapDispatchToProps = dispatch => ({

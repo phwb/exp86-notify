@@ -6,8 +6,12 @@ const Item = props => {
     e.preventDefault()
   }
 
+  const className = props.selected
+    ? 'active'
+    : ''
+
   return (
-    <li>
+    <li className={ className }>
       <a href="#" onClick={ handler }>
         { props.name }
       </a>
@@ -22,7 +26,7 @@ Item.propTypes = {
 }
 
 const EventList = props => {
-  const { items, onClick } = props
+  const { items, onClick, selectedEventId } = props
 
   if (!items.length) {
     return null
@@ -31,7 +35,14 @@ const EventList = props => {
   return (
     <nav className="navbar notification-navbar">
       <ul>
-        { items.map(item => <Item key={ item.id } onClick={ onClick } { ...item } />) }
+        { items.map(item => (
+          <Item
+            key={ item.id }
+            onClick={ onClick }
+            selected={ selectedEventId === item.id }
+            { ...item }
+          />
+        )) }
       </ul>
     </nav>
   )

@@ -23,7 +23,7 @@ export class App extends Component {
     const { loading } = this.props
 
     if (loading) {
-      return <div>Загрузка...</div>
+      return <div><em>Загрузка уведомлений...</em></div>
     }
 
     return (

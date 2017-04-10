@@ -12,7 +12,7 @@ export const Events = props => {
   } = props
 
   if (loading) {
-    return <div>Loading events...</div>
+    return <div><em>Загрузка событий...</em></div>
   }
 
   if (!items.length) {
@@ -33,7 +33,11 @@ export const Events = props => {
           <EventSelect items={ available } onChange={ code => addEvent(entityCode, code) }/>
         </div>
 
-        <EventList items={ registered } onClick={ eventId => selectEvent(entityCode, eventId) }/>
+        <EventList
+          items={ registered }
+          onClick={ eventId => selectEvent(entityCode, eventId) }
+          selectedEventId={ event && event.id }
+        />
       </div>
 
       <EventDetail
