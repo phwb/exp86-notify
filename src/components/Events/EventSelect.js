@@ -1,26 +1,23 @@
 import React, { PropTypes } from 'react'
-
-const EventOption = props => (
-  <option value={ props.code }>
-    { props.name }
-  </option>
-)
-
-EventOption.propTypes = {
-  id: PropTypes.number,
-  name: PropTypes.string.isRequired,
-  code: PropTypes.string.isRequired
-}
+import Select from 'react-select'
 
 const EventSelect = props => (
-  <select onChange={ event => props.onChange(event.target.value) }>
-    <EventOption code='' name='не выбрано' />
-    { props.items.map(item => <EventOption key={ item.code } { ...item } />) }
-  </select>
+  <Select
+    className="CustomSelect"
+    options={ props.items.map(item => ({
+      label: item.name,
+      value: item.code
+    })) }
+    onChange={ val => props.onChange(val.value) }
+    placeholder="Выберите событие..."
+  />
 )
 
 EventSelect.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.shape(EventOption.propTypes)),
+  items: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired
+  })),
   onChange: PropTypes.func.isRequired
 }
 

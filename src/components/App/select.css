@@ -1,0 +1,59 @@
+.CustomSelect .Select-placeholder {
+    font-style: italic;
+    line-height: 38px;
+}
+
+.CustomSelect .Select-control {
+    border-radius: 0;
+    border-color: #d2d2d2;
+    height: 40px;
+}
+
+.CustomSelect .Select-value {
+    background: #f1f2f2;
+    color: #5e5e5e;
+    border: 0 none;
+    font-size: 14px;
+    line-height: 28px;
+}
+
+.CustomSelect .Select-value-icon {
+    border-right: 0 none;
+    background: #e7e9e9;
+    border-radius: 0;
+    padding: 0 10px;
+}
+
+.CustomSelect .Select-value-label {
+    padding: 0 10px;
+}
+
+.CustomSelect .Select-clear {
+    font-size: inherit;
+}
+
+.CustomSelect .Select-value-icon:hover,
+.CustomSelect .Select-value-icon:focus {
+    background-color: #e7e9e9;
+    color: #e35757;
+}
+
+.CustomSelect.is-focused:not(.is-open) > .Select-control {
+    border-color: #0b54a0;
+    box-shadow: none;
+}
+
+.CustomSelect .Select-option:last-child {
+    border-radius: 0;
+}
+
+.CustomSelect .Select-option.is-focused {
+    background-color: #0b54a0;
+    color: #fff;
+}
+
+.CustomSelect .Select-menu-outer {
+    border-color: #d2d2d2;
+    border-radius: 0;
+    box-shadow: none;
+}

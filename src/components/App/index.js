@@ -5,6 +5,7 @@ import { load as loadSections } from '../../actions/sections'
 import Sections from '../Sections'
 import Events from '../Events'
 import './notification.css'
+import './select.css'
 
 export class App extends Component {
   static propTypes = {
