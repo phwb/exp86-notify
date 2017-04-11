@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import Select from 'react-select'
-import 'react-select/dist/react-select.css'
 
 export const Assertions = props => {
   const { items, change, values } = props

@@ -4,6 +4,7 @@ import { load as loadDictionaries } from '../../actions/dictionaries'
 import { load as loadSections } from '../../actions/sections'
 import Sections from '../Sections'
 import Events from '../Events'
+import 'react-select/dist/react-select.css'
 import './notification.css'
 import './select.css'
 

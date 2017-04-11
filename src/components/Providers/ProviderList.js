@@ -42,7 +42,7 @@ ProviderTitle.propTypes = {
 
 export const ProviderList = props => {
   const {
-    items, entityCode, eventId, data,
+    items, entityCode, eventId, providersData,
     unregister, update
   } = props
 
@@ -54,7 +54,7 @@ export const ProviderList = props => {
     <div>
       { items.map(provider => {
         const { id } = provider
-        const { template, rules } = data[ id ]
+        const { template, rules } = providersData.find(data => data.providerId === id)
 
         return (
           <div key={ id } className="provider">
@@ -88,8 +88,8 @@ ProviderList.propTypes = {
   update: PropTypes.func
 }
 
-const mapStateToProps = state => ({
-  data: state.providers.data
+const mapStateToProps = ({ providersData }) => ({
+  providersData
 })
 
 const mapDispatchToProps = {

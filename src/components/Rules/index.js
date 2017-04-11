@@ -1,43 +1,39 @@
 import React, { Component, PropTypes } from 'react'
 import RuleDetail from './RuleDetail'
 
-const RuleItem = props => {
-  const handle = e => {
-    props.onClick(props.id)
+const RuleList = props => {
+  const handle = index => e => {
+    props.changeHandle(index)
     e.preventDefault()
   }
 
-  let className = props.active
-    ? 'provider-tabs__item active'
-    : 'provider-tabs__item'
-
   return (
-    <a href='#' className={ className } onClick={ handle }>
-      { props.name }
-    </a>
+    <div className="provider-tabs regs">
+      { props.items.map((item, index) => {
+        const className = index === props.selectedIndex
+          ? 'provider-tabs__item active'
+          : 'provider-tabs__item'
+
+        return (
+          <a
+            href='#'
+            className={ className }
+            key={ `rule-item-${index}` }
+            onClick={ handle(index) }
+          >{ index + 1 }</a>
+        )
+      }) }
+
+      <div className="provider-nav__add-rule">
+        <button onClick={ () => props.addHandle() }>Добавить правило</button>
+      </div>
+    </div>
   )
 }
 
-const RuleList = props => (
-  <div className="provider-tabs regs">
-    { props.items.map((item, index) => (
-      <RuleItem
-        key={ `rule-item-${index}` }
-        name={ index + 1 }
-        { ...item }
-        onClick={ () => props.changeHandle(index) }
-        active={ index === props.selectedIndex }
-      />
-    )) }
-
-    <div className="provider-nav__add-rule">
-      <button onClick={ () => props.addHandle() }>Добавить правило</button>
-    </div>
-  </div>
-)
-
 RuleList.propTypes = {
   items: PropTypes.array,
+  selectedIndex: PropTypes.number,
   changeHandle: PropTypes.func,
   addHandle: PropTypes.func
 }
@@ -51,8 +47,21 @@ export class Rules extends Component {
     add: PropTypes.func
   }
 
+  static TAB_NAME = 'rules'
+
   state = {
     index: 0
+  }
+
+  componentWillReceiveProps (nextProps) {
+    const currentLength = this.props.rules.length
+    const nextLength = nextProps.rules.length
+
+    if (currentLength !== nextLength) {
+      this.setState({
+        index: nextLength - 1
+      })
+    }
   }
 
   render () {
@@ -63,13 +72,15 @@ export class Rules extends Component {
     let detail = null
 
     if (rule) {
-      detail = <RuleDetail
-        { ...rule }
-        entityCode={ entityCode }
-        eventId={ eventId }
-        providerId={ providerId }
-        ruleIndex={ index }
-      />
+      detail = (
+        <RuleDetail
+          { ...rule }
+          entityCode={ entityCode }
+          eventId={ eventId }
+          providerId={ providerId }
+          ruleIndex={ index }
+        />
+      )
     }
 
     return (

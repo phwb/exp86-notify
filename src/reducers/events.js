@@ -6,10 +6,7 @@ import {
 const defaultState = {
   id: null,
   items: [],
-  loading: false,
-  // справочники для провайдеров
-  templates: [],
-  assertions: [],
+  loading: false
 }
 
 export const events = (state = defaultState, action) => {
@@ -17,13 +14,9 @@ export const events = (state = defaultState, action) => {
 
   switch (type) {
     case LOAD_EVENT + SUCCESS:
-      const { items, templates, assertions } = payload
-
       return {
         ...state,
-        items,
-        templates,
-        assertions,
+        items: payload.items,
         loading: false
       }
 

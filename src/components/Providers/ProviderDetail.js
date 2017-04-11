@@ -2,11 +2,11 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Template from '../Template'
 import { Rules } from '../Rules'
-import { addRule } from '../../actions/providers'
+import { addRule } from '../../actions/providersData'
 
 export class ProviderDetail extends Component {
   state = {
-    activeTab: 'template'
+    activeTab: Template.TAB_NAME
   }
 
   changeTab = tabName => () => {
@@ -31,8 +31,8 @@ export class ProviderDetail extends Component {
           id={ `template-${key}` }
           name={ `tab-${key}` }
           type="radio"
-          onChange={ this.changeTab('template') }
-          checked={ activeTab === 'template' }
+          onChange={ this.changeTab(Template.TAB_NAME) }
+          checked={ activeTab === Template.TAB_NAME }
         />
         <label htmlFor={ `template-${key}` }>Шаблон</label>
         <input
@@ -40,8 +40,8 @@ export class ProviderDetail extends Component {
           id={ `rules-${key}` }
           name={ `tab-${key}` }
           type="radio"
-          onChange={ this.changeTab('rules') }
-          checked={ activeTab === 'rules' }
+          onChange={ this.changeTab(Rules.TAB_NAME) }
+          checked={ activeTab === Rules.TAB_NAME }
         />
         <label htmlFor={ `rules-${key}` }>Правила</label>
         <hr/>
@@ -67,13 +67,14 @@ ProviderDetail.propTypes = {
   entityCode: PropTypes.string.isRequired,
   eventId: PropTypes.number.isRequired,
   providerId: PropTypes.number.isRequired,
+  defaultLogic: PropTypes.string,
+
   template: PropTypes.shape({
     title: PropTypes.string,
     body: PropTypes.string
   }),
-  defaultLogic: PropTypes.string,
   rules: PropTypes.array,
-  update: PropTypes.func,
+
   addRule: PropTypes.func
 }
 

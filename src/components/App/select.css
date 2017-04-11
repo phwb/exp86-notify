@@ -6,7 +6,10 @@
 .CustomSelect .Select-control {
     border-radius: 0;
     border-color: #d2d2d2;
-    height: 40px;
+}
+
+.CustomSelect .Select-multi-value-wrapper {
+    padding-bottom: 5px;
 }
 
 .CustomSelect .Select-value {

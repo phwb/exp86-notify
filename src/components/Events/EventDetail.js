@@ -27,7 +27,6 @@ export const EventDetail = props => {
   )
 }
 
-
 EventDetail.propTypes = {
   removeHandler: PropTypes.func.isRequired,
   entityCode: PropTypes.string.isRequired,

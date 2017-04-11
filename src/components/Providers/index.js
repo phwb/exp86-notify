@@ -8,9 +8,9 @@ export class Providers extends Component {
   static propTypes = {
     entityCode: PropTypes.string,
     eventId: PropTypes.number,
-    available: PropTypes.array,
-    registered: PropTypes.array,
+    items: PropTypes.array,
     loading: PropTypes.bool,
+
     load: PropTypes.func,
     register: PropTypes.func
   }
@@ -22,27 +22,24 @@ export class Providers extends Component {
 
   componentWillReceiveProps (nextProps) {
     const { load, entityCode, eventId } = this.props
-    const { available, registered, loading } = nextProps
-    const items = available.concat(registered)
+    const { items, loading, eventId: nextEventId } = nextProps
 
     // обновляемся в случае смены события (клик по списку событий)
-    if (nextProps.eventId !== eventId) {
-      return load(entityCode, nextProps.eventId)
+    if (nextEventId !== eventId) {
+      return load(entityCode, nextEventId)
     }
 
     // обновляемся в случае сохранения или удаления продайера
     if (!items.length && loading === false) {
-      return load(entityCode, nextProps.eventId)
+      return load(entityCode, nextEventId)
     }
   }
 
   render () {
     const {
-      entityCode, eventId,
-      available, registered, loading,
+      entityCode, eventId, items, loading,
       register
     } = this.props
-    const items = available.concat(registered)
 
     if (!items.length && loading === false) {
       return null
@@ -51,6 +48,9 @@ export class Providers extends Component {
     if (loading) {
       return <div><em>Загрузка списка провайдеров...</em></div>
     }
+
+    const available = items.filter(items => items.id === 0)
+    const registered = items.filter(items => items.id > 0)
 
     return (
       <div className="providers">
@@ -75,8 +75,7 @@ export class Providers extends Component {
 }
 
 const mapStateToProps = ({ providers }) => ({
-  registered: providers.registered,
-  available: providers.available,
+  items: providers.items,
   loading: providers.loading
 })
 

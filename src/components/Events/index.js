@@ -7,9 +7,11 @@ import { add, select, remove } from '../../actions/events'
 
 export const Events = props => {
   const {
-    loading, items, entityCode, event,
+    entityCode, loading, items, eventId,
     addEvent, selectEvent, removeEvent
   } = props
+
+  let detail = null
 
   if (loading) {
     return <div><em>Загрузка событий...</em></div>
@@ -18,6 +20,17 @@ export const Events = props => {
   if (!items.length) {
     return null
   }
+
+  if (eventId) {
+    detail = (
+      <EventDetail
+        removeHandler={ id => removeEvent(entityCode, id) }
+        event={ items.find(item => item.id === eventId) }
+        entityCode={ entityCode }
+      />
+    )
+  }
+
 
   // доступные для регистрации события
   const available = items.filter(item => item.id === 0)
@@ -35,16 +48,12 @@ export const Events = props => {
 
         <EventList
           items={ registered }
-          onClick={ eventId => selectEvent(entityCode, eventId) }
-          selectedEventId={ event && event.id }
+          onClick={ eventId => selectEvent(eventId) }
+          selectedEventId={ eventId }
         />
       </div>
 
-      <EventDetail
-        removeHandler={ id => removeEvent(entityCode, id) }
-        event={ event }
-        entityCode={ entityCode }
-      />
+      { detail }
     </div>
   )
 }
@@ -53,7 +62,8 @@ Events.propTypes = {
   entityCode: PropTypes.string,
   loading: PropTypes.bool,
   items: PropTypes.array,
-  event: PropTypes.object,
+  eventId: PropTypes.number,
+
   addEvent: PropTypes.func,
   selectEvent: PropTypes.func,
   removeEvent: PropTypes.func
@@ -62,16 +72,13 @@ Events.propTypes = {
 const mapStateToProps = state => {
   const { events, selectedSection } = state
   const { items, id, loading } = events
-  const event = id
-    ? items.find(item => item.id === id)
-    : null
 
   return {
     entityCode: selectedSection,
     loadingProviders: state.providers.loading,
     loading,
     items,
-    event
+    eventId: id
   }
 }
 
@@ -89,7 +96,7 @@ const mergeProps = (stateProps, dispatchProps) => {
   return {
     ...state,
     ...dispatchProps,
-    selectEvent: (entityCode, eventId) => {
+    selectEvent: eventId => {
       if (loadingProviders) {
         return
       }
