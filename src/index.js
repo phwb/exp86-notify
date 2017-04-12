@@ -11,8 +11,15 @@ const logger = createLogger({
   collapsed: true
 })
 
+const middleware = [ thunk ]
+
+/** @namespace process */
+if (process.env.NODE_ENV !== 'production') {
+  middleware.push(logger)
+}
+
 render(
-  <Provider store={ createStore(reducers, applyMiddleware(thunk, logger)) }>
+  <Provider store={ createStore(reducers, applyMiddleware(...middleware)) }>
     <App />
   </Provider>,
   document.querySelector('#root')
