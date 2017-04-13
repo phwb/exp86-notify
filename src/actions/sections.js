@@ -6,7 +6,7 @@ export const load = () => dispatch => {
     type: LOAD_SECTIONS + START
   })
 
-  getJSON('/entities')
+  return getJSON('/entities')
     .then(items => dispatch({
       type: LOAD_SECTIONS + SUCCESS,
       payload: items

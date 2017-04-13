@@ -6,7 +6,7 @@ export const load = () => dispatch => {
     type: LOAD_DICTIONARIES + START
   })
 
-  Promise.all([
+  return Promise.all([
     getJSON(`/dictionaries/variables/consumers`),
     getJSON(`/dictionaries/logic`)
   ])
