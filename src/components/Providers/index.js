@@ -49,6 +49,7 @@ export class Providers extends Component {
       return <div><em>Загрузка списка провайдеров...</em></div>
     }
 
+    const available = items.filter(items => items.id === 0)
     const registered = items.filter(items => items.id > 0)
 
     return (
@@ -57,7 +58,7 @@ export class Providers extends Component {
           <div className="form_default_title">Добавить провайдера</div>
           <div className="form_default_input">
             <ProviderSelect
-              items={ items }
+              items={ available }
               onChange={ providerCode => register(entityCode, eventId, providerCode) }
             />
           </div>
